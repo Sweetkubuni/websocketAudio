@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -23,7 +24,9 @@ func main() {
 
 				messageType, revdata, _ := conn.ReadMessage()
 
+				fmt.Println("data recieved")
 				if recieverReady {
+					fmt.Println("Sending data through channel")
 					audioMessage <- revdata
 					whatType <- messageType
 				}
@@ -40,6 +43,8 @@ func main() {
 			for {
 				msg := <-audioMessage
 				messageType := <-whatType
+
+				fmt.Println("Sending data to receiver")
 				conn.WriteMessage(messageType, msg)
 			}
 		}()
